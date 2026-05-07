@@ -1,144 +1,32 @@
-MCP Server Debug and OpenCode Connection Log
+$ python3 -m py_compile server.py
+$ python3 test_client.py
+=== Tools List ===
+meta=None nextCursor=None tools=[Tool(name='read_github_file', title=None, description='GitHub 리포지토리에서 파일 내용을 읽어옵니다', inputSchema={'type': 'object', 'properties': {'repo_url': {'type': 'string', 'description': 'GitHub 저장소 URL (예: https://github.com/owner/repo)'}, 'branch': {'type': 'string', 'description': '브랜치 이름 (기본값: main)'}, 'file_path': {'type': 'string', 'description': '파일 경로 (예: src/main.py)'}}, 'required': ['repo_url', 'file_path']}, outputSchema=None, icons=None, annotations=None, meta=None, execution=None), Tool(name='subtract', title=None, description='두 숫자의 뺄셈 결과를 계산합니다', inputSchema={'type': 'object', 'properties': {'a': {'type': 'number', 'description': '첫 번째 숫자'}, 'b': {'type': 'number', 'description': '두 번째 숫자'}}, 'required': ['a', 'b']}, outputSchema=None, icons=None, annotations=None, meta=None, execution=None)]
 
-1. Project Overview
-This project is a simple MCP server for class practice.
-It provides two tools:
-- read_github_file: reads a file from a GitHub repository
-- subtract: calculates a - b
+=== Subtract Test ===
+meta=None content=[TextContent(type='text', text='결과: 10 - 3 = 7', annotations=None, meta=None)] structuredContent=None isError=False
 
-2. Environment
-OS: Ubuntu / WSL
-Python: python3
-Project folder: /home/kiyu/mcp-simple-server
+=== GitHub File Read Test ===
+meta=None content=[TextContent(type='text', text='This is Python version 3.15.0 alpha 8
+...
+', annotations=None, meta=None)] structuredContent=None isError=False
+$ opencode mcp list
 
-3. Debug Process
-
-Step 1: Created a Python virtual environment.
-Command:
-python3 -m venv venv
-source venv/bin/activate
-
-Step 2: Installed required packages.
-Command:
-pip install -r requirements.txt
-
-Step 3: Checked Python syntax.
-Command:
-python3 -m py_compile server.py
-
-Result:
-No syntax error.
-
-Step 4: Ran test client.
-Command:
-python3 test_client.py
-
-Result:
-The MCP client successfully connected to the server.
-The tools/list request returned two tools:
-- read_github_file
-- subtract
-
-4. Tool Call Test
-
-Test 1: subtract
-Input:
-a = 10
-b = 3
-
-Output:
-결과: 10 - 3 = 7
-
-Result:
-Success.
-
-Test 2: read_github_file
-Input:
-repo_url = https://github.com/python/cpython
-branch = main
-file_path = README.rst
-
-Output:
-The server successfully read the README.rst file from the CPython GitHub repository.
-
-Result:
-Success.
-
-5. Error and Fix
-
-At first, the GitHub file test used README.md.
-However, the CPython repository does not have README.md in the main branch.
-The server returned a 404 Not Found error.
-
-Fix:
-Changed file_path from README.md to README.rst.
-
-After the fix, read_github_file worked correctly.
-
-6. OpenCode Connection
-
-The MCP server was connected to OpenCode as a local MCP server.
-
-OpenCode MCP config example:
-
-{
-  "$schema": "https://opencode.ai/config.json",
-  "mcp": {
-    "simple-mcp-server": {
-      "type": "local",
-      "command": [
-        "/home/kiyu/mcp-simple-server/venv/bin/python",
-        "/home/kiyu/mcp-simple-server/server.py"
-      ],
-      "enabled": true,
-      "environment": {}
-    }
-  }
-}
-
-7. OpenCode Tool Call Experience
-
-In OpenCode, I asked the agent to use the MCP server.
-
-Example prompts:
-- Use simple-mcp-server to calculate 20 - 8.
-- Use simple-mcp-server to read README.rst from https://github.com/python/cpython on the main branch.
-
-Result:
-OpenCode recognized the MCP server and was able to call the MCP tools.
-
-8. Conclusion
-
-Through this practice, I learned how an MCP server works with an AI coding agent.
-The server does not print output by itself because it uses stdio.
-Instead, it waits for an MCP client such as test_client.py or OpenCode to call its tools.
-
-9. Actual OpenCode MCP Tool Call Log
-
-I connected the MCP server to OpenCode and tested both tools directly from OpenCode.
-
-Test 1: subtract tool
-
-Prompt entered in OpenCode:
+┌  MCP Servers
+│
+●  ✓ simple-mcp-server connected
+│      /home/kiyu/mcp-simple-server/venv/bin/python /home/kiyu/mcp-simple-server/server.py
+│
+└  1 server(s)
 Use simple-mcp-server MCP tool to calculate 20 - 8.
 
-Actual OpenCode output:
 Thinking: The user wants me to use the simple-mcp-server_subtract tool to calculate 20 - 8.
 ⚙ simple-mcp-server_subtract [a=20, b=8]
 Thinking: The tool returned the result of the subtraction. 20 - 8 = 12.
 12
 ▣  Build · MiniMax M2.5 Free · 8.0s
-
-Result:
-The subtract tool was successfully called from OpenCode.
-The calculation result was 12.
-
-Test 2: read_github_file tool
-
-Prompt entered in OpenCode:
 Use simple-mcp-server MCP tool read_github_file to read README.rst from https://github.com/python/cpython on branch main.
 
-Actual OpenCode output:
 Thinking: The user wants to use the simple-mcp-server MCP tool to read a file from GitHub. They want to read README.rst from https://github.com/python/cpython on branch main.
 I have a tool called simple-mcp-server_read_github_file that takes repo_url, file_path, and optional branch parameter.
 Let me call it with:
@@ -149,11 +37,3 @@ Let me call it with:
 Thinking: The user just wanted me to read the README.rst file and I should present the result concisely. This is Python 3.15.0 alpha 8.
 The README.rst shows this is CPython version 3.15.0 alpha 8. Key info: Python 3.15 release schedule is in PEP 790, build instructions use ./configure && make, and testing is done with make test. The distribution contains no GPL code and may be used in proprietary projects.
 
-Result:
-The read_github_file tool was successfully called from OpenCode.
-OpenCode used the MCP server to read README.rst from the CPython GitHub repository.
-
-Final Conclusion:
-Both MCP tools worked successfully in OpenCode:
-- simple-mcp-server_subtract
-- simple-mcp-server_read_github_file- read_github_file
