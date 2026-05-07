@@ -115,34 +115,45 @@ Instead, it waits for an MCP client such as test_client.py or OpenCode to call i
 
 9. Actual OpenCode MCP Tool Call Log
 
-OpenCode was successfully connected to the MCP server.
+I connected the MCP server to OpenCode and tested both tools directly from OpenCode.
 
-First, I tested the subtract tool.
+Test 1: subtract tool
 
-Prompt:
+Prompt entered in OpenCode:
 Use simple-mcp-server MCP tool to calculate 20 - 8.
 
-OpenCode tool call:
-simple-mcp-server_subtract [a=20, b=8]
+Actual OpenCode output:
+Thinking: The user wants me to use the simple-mcp-server_subtract tool to calculate 20 - 8.
+⚙ simple-mcp-server_subtract [a=20, b=8]
+Thinking: The tool returned the result of the subtraction. 20 - 8 = 12.
+12
+▣  Build · MiniMax M2.5 Free · 8.0s
 
 Result:
-20 - 8 = 12
+The subtract tool was successfully called from OpenCode.
+The calculation result was 12.
 
-This confirmed that the subtract MCP tool works correctly in OpenCode.
+Test 2: read_github_file tool
 
-Second, I tested the read_github_file tool.
-
-Prompt:
+Prompt entered in OpenCode:
 Use simple-mcp-server MCP tool read_github_file to read README.rst from https://github.com/python/cpython on branch main.
 
-OpenCode tool call:
-simple-mcp-server_read_github_file [branch=main, file_path=README.rst, repo_url=https://github.com/python/cpython]
+Actual OpenCode output:
+Thinking: The user wants to use the simple-mcp-server MCP tool to read a file from GitHub. They want to read README.rst from https://github.com/python/cpython on branch main.
+I have a tool called simple-mcp-server_read_github_file that takes repo_url, file_path, and optional branch parameter.
+Let me call it with:
+- repo_url: https://github.com/python/cpython
+- file_path: README.rst
+- branch: main
+⚙ simple-mcp-server_read_github_file [branch=main, file_path=README.rst, repo_url=https://github.com/python/cpython]
+Thinking: The user just wanted me to read the README.rst file and I should present the result concisely. This is Python 3.15.0 alpha 8.
+The README.rst shows this is CPython version 3.15.0 alpha 8. Key info: Python 3.15 release schedule is in PEP 790, build instructions use ./configure && make, and testing is done with make test. The distribution contains no GPL code and may be used in proprietary projects.
 
 Result:
-OpenCode successfully read the README.rst file from the CPython GitHub repository.
-The file content showed that it is Python version 3.15.0 alpha 8.
+The read_github_file tool was successfully called from OpenCode.
+OpenCode used the MCP server to read README.rst from the CPython GitHub repository.
 
-Conclusion:
-Both MCP tools were successfully called from OpenCode:
-- subtract
-- read_github_file
+Final Conclusion:
+Both MCP tools worked successfully in OpenCode:
+- simple-mcp-server_subtract
+- simple-mcp-server_read_github_file- read_github_file
